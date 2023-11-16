@@ -1,12 +1,13 @@
 FRONT_END_BINARY=frontend-service
 BROKER_BINARY=broker-service
+AUTH_BINARY=auth-service
 
 up:
 	@echo "Starting Docker images..."
 	docker compose up -d
 	@echo "Docker images started!"
 
-up_build: build_broker
+up_build: build_broker build_auth
 	@echo "Stopping docker images (if running...)"
 	docker compose down
 	@echo "Building (when required) and starting docker images..."
@@ -23,6 +24,11 @@ build_broker:
 	cd broker-service && env GOOS=linux CGO_ENABLED=0 go build -o bin/${BROKER_BINARY} ./cmd/api
 	@echo "Done!"
 
+build_auth:
+	@echo "Building auth binary..."
+	cd auth-service && env GOOS=linux CGO_ENABLED=0 go build -o bin/${AUTH_BINARY} ./cmd/api
+	@echo "Done!"
+
 build_front:
 	@echo "Building front end binary..."
 	cd front-end && env CGO_ENABLED=0 go build -o bin/${FRONT_END_BINARY} ./cmd/web
@@ -34,7 +40,7 @@ start: build_front
 
 stop:
 	@echo "Stopping front end..."
-	@-pkill -SIGTERM -f "./bin/${FRONT_END_BINARY}"
+	@pkill -SIGTERM -f "./bin/${FRONT_END_BINARY}"
 	@echo "Stopped front end!"
 
-.PHONY: up up_build down build_broker build_front start stop
+.PHONY: up up_build down build_broker build_front start stop build_auth

@@ -1,1 +1,5 @@
+# binaries
 */**/bin
+
+# local data
+db-data
