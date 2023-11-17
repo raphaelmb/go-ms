@@ -1,13 +1,14 @@
 FRONT_END_BINARY=frontend-service
 BROKER_BINARY=broker-service
 AUTH_BINARY=auth-service
+LOGGER_BINARY=logger-service
 
 up:
 	@echo "Starting Docker images..."
 	docker compose up -d
 	@echo "Docker images started!"
 
-up_build: build_broker build_auth
+up_build: build_broker build_auth build_logger
 	@echo "Stopping docker images (if running...)"
 	docker compose down
 	@echo "Building (when required) and starting docker images..."
@@ -27,6 +28,11 @@ build_broker:
 build_auth:
 	@echo "Building auth binary..."
 	cd auth-service && env GOOS=linux CGO_ENABLED=0 go build -o bin/${AUTH_BINARY} ./cmd/api
+	@echo "Done!"
+
+build_logger:
+	@echo "Building logger binary..."
+	cd logger-service && env GOOS=linux CGO_ENABLED=0 go build -o bin/${LOGGER_BINARY} ./cmd/api
 	@echo "Done!"
 
 build_front:
