@@ -24,6 +24,22 @@ services:
     ports:
       - "8082:80"
 
+  mail-service:
+    build:
+      context: ./mail-service/
+    restart: always
+    ports:
+      - "8083:80"
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_ENCRYPTION: none
+      FROM_NAME: "admin"
+      FROM_ADDRESS: "admin@example.com"
+
   postgres:
     image: postgres:14
     ports:
@@ -50,3 +66,9 @@ services:
       - ./db-data/mongo:/data/db
     depends_on:
       - logger-service
+  
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

@@ -2,13 +2,14 @@ FRONT_END_BINARY=frontend-service
 BROKER_BINARY=broker-service
 AUTH_BINARY=auth-service
 LOGGER_BINARY=logger-service
+MAIL_BINARY=mail-service
 
 up:
 	@echo "Starting Docker images..."
 	docker compose up -d
 	@echo "Docker images started!"
 
-up_build: build_broker build_auth build_logger
+up_build: build_broker build_auth build_logger build_mail
 	@echo "Stopping docker images (if running...)"
 	docker compose down
 	@echo "Building (when required) and starting docker images..."
@@ -35,6 +36,11 @@ build_logger:
 	cd logger-service && env GOOS=linux CGO_ENABLED=0 go build -o bin/${LOGGER_BINARY} ./cmd/api
 	@echo "Done!"
 
+build_mail:
+	@echo "Building mail binary..."
+	cd mail-service && env GOOS=linux CGO_ENABLED=0 go build -o bin/${MAIL_BINARY} ./cmd/api
+	@echo "Done!"
+
 build_front:
 	@echo "Building front end binary..."
 	cd front-end && env CGO_ENABLED=0 go build -o bin/${FRONT_END_BINARY} ./cmd/web
@@ -49,4 +55,4 @@ stop:
 	@pkill -SIGTERM -f "./bin/${FRONT_END_BINARY}"
 	@echo "Stopped front end!"
 
-.PHONY: up up_build down build_broker build_front start stop build_auth
+.PHONY: up up_build down build_broker build_front start stop build_auth build_logger build_mail
