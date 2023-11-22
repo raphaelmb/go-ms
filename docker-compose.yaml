@@ -40,6 +40,21 @@ services:
       FROM_NAME: "admin"
       FROM_ADDRESS: "admin@example.com"
 
+  listener-service:
+    build: 
+      context: ./listener-service
+    restart: always
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3.9.14-alpine
+    ports:
+      - "5672:5672"
+    restart: always 
+    volumes:
+      - ./db-data/rabbitmq:/var/lib/rabbitmq
+
   postgres:
     image: postgres:14
     ports:
